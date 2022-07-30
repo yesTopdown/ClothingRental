@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主页面</title>
+    <link rel="stylesheet" href="css/remanager.css">
+     <!-- 引入样式 -->
+<!--     <link rel="stylesheet" href="../static/plugins/element-ui/index.css">-->
+     <!-- 引入组件库 -->
+     <script src="../static/plugins/vue/vue.js"></script>
+<!--     <script src="../static/plugins/element-ui/index.js"></script>-->
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+     <script src="../static/js/validate.js"></script>
+     <script src="../static/plugins/axios/axios.min.js"></script>
+</head>
+<body>
+    <div id="app">
+          <div>
+            <!-- 头部导航 -->
+            <el-row class="header-content">
+                <el-col :span="2" :offset="4">
+                    <div>
+                        <span class="header-title">管理员</span>
+                    </div>
+                </el-col>
+                <el-col :span="2" :offset="14">
+                    <div> 
+                        <el-button icon="el-icon-menu" @click="headermenu = true"></el-button>
+                    </div>
+                </el-col>
+            </el-row>
+            <el-drawer
+                title="导航"
+                size="18%"
+                :visible.sync="headermenu"
+                :direction="direction"
+                :with-header="true">
+                <!-- 里面的导航 -->
+                <div >
+                    <el-menu
+                        class="drawerin-menu"
+                        default-active="1"
+                            text-color="black" background-color="white" active-text-color="black">
+                        <div v-for="menut in menuUrlist" :key="menut.id">
+                            <el-submenu  v-if="menut.menuchildre&&menut.menuchildre.length>0">
+                                <template slot="title">
+                                <i :class="menut.icon"></i>
+                                <span>{{ menut.name }}</span>
+                                </template>
+                               <el-menu-item-group  >
+                                    <el-menu-item index="3-1" v-if="menuc in menut.menuchildre" @click="menuHandle(menuc,false)">
+                                        <i :class="menuc.icon"></i>{{menuc.name}}</el-menu-item>
+                                </el-menu-item-group>
+                            </el-submenu>
+                            <el-menu-item v-else :index="menut.id" @click="menuHandle(menut,false)">
+                                <i class="iconfont" :class="menut.icon"></i>
+                                <span slot="title">{{menut.name}}</span>
+                            </el-menu-item>
+                       </div>
+                    </el-menu>
+                </div>
+            </el-drawer> 
+          </div>
+        <!-- 主体 -->
+        <div style="background:url('img/reservation-bg.jpg');">
+            <el-row>
+                <el-col :span="18" :offset="3">
+                    <template>
+                        <iframe
+                            name="cIframe"
+                            :src="iframeUrl"
+                            width="1200px"
+                            height="700px"
+                            frameborder="0"
+                        ></iframe>
+                    </template> 
+                </el-col>
+            </el-row>
+        </div>
+    </div>
+</body>
+    <script>
+        new Vue({
+            el:'#app',
+            data(){
+                return{
+                    //左侧地址信息
+                    menuUrlist:[
+                        {
+                            id: '1',
+                            name: '会员信息管理',
+                            url: './memberman.html',
+                            icon: 'el-icon-user',
+                            menuchildre:[]
+                        },
+                        {
+                            id: '2',
+                            name: '订单核实',
+                            url: './manorder.html',
+                            icon: 'el-icon-s-order',
+                            menuchildre:[]
+                        },
+                        {
+                            id: '3',
+                            name: '服装租聘管理',
+                            url: './clothmag.html',
+                            icon: 'el-icon-s-tools',
+                            menuchildre:[
+                                {
+                                    id: '3-1',
+                                    name: '服装信息',
+                                    url: './clothdetail.html',
+                                    icon: 'el-icon-minus'
+                                },
+                                {
+                                    id: '3-2',
+                                    name: '服装出库入库',
+                                    url: './clothmag.html ',
+                                    icon: 'el-icon-minus'
+                                }
+                            ]
+                        },
+                    ],
+                    iframeUrl:'./memberman.html',
+                    direction:'ltr', //菜单栏方向
+                    headermenu:false, //头部菜单栏显示
+                };
+            },
+            methods:{
+                menuHandle(item,ab){
+                    this.iframeUrl=item.url
+                }
+            }
+        })
+    </script>
+</html>

@@ -1,0 +1,38 @@
+
+.ship-rate{
+    color: #000;
+    text-align: center; 
+    text-decoration: none;
+    display: inline-block;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    padding-right: 10px;
+}
+.ship-rate:hover{
+    background-color:  #E5C1DA;
+    border-radius: 10px;
+}
+.ship-rate-1{
+    height: 400px;width:300px;background-color: white;
+    border: #204C47 2px solid;
+    border-radius: 5px;
+}
+.ship-rate-2{
+    padding: 20px;
+}
+.ship-button{
+    color: white;font-size: 15px;width: 250px;
+     background-color: #000;margin-top: 150px;
+    
+}
+.ship-ul{
+    list-style-type: none;
+}
+li{
+    float: left;
+    /* display: inline; */
+}
+.shipH{
+    font-family: '幼圆';
+    font-size: 35px;
+}

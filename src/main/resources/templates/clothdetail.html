@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>服装录入</title>
+    <link rel="shortcut icon" href="/logo.ico">
+    <link rel="stylesheet" href="css/managercontent.css">
+      <!-- 引入组件库 -->
+      <script src="../static/plugins/vue/vue.js"></script>
+      <!-- 引入样式 -->
+      <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+      <!-- 引入组件库 -->
+      <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+      <script src="../static/js/validate.js"></script>
+      <script src="../static/plugins/axios/axios.min.js"></script>
+      <style>
+          .edit-add-form{
+              width: 80%;
+              margin: auto;
+          }
+          .cloth-dia{
+            background-color: black;
+            width: 50%;
+            color: white;
+            border: black 1px solid;
+          }
+          .cloth-dia:hover{
+            background-color: white;
+            color: black;
+            border: black 1px solid;
+          }
+      </style>
+</head>
+<body >
+    <div id="app">
+      <div class="til">
+
+        服装管理  
+      </div>
+      <el-divider></el-divider>
+        <template>
+<!--          tableData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))-->
+            <el-table
+              :data="tableData"
+              style="width: 100%;">
+              <el-table-column
+                label="图片"
+                prop="image">
+                <template slot-scope="scope">
+                  <img width="30%" :src="scope.row.image"></template>
+              </el-table-column>
+
+              <el-table-column
+                label="名字"
+                prop="name">
+                <template slot-scope="scope">
+                  <span>{{scope.row.name}}</span></template>
+              </el-table-column>
+              <el-table-column
+                label="尺码"
+                prop="size">
+                <template slot-scope="scope">
+                  <span>{{scope.row.size}}</span></template>
+              </el-table-column>
+              <el-table-column
+                label="租金"
+                prop="rent">
+                <template slot-scope="scope">
+                  <span>{{scope.row.rent}}/天</span></template>
+              </el-table-column>
+
+              <el-table-column
+                label="颜色"
+                prop="color">
+                <template slot-scope="scope">
+                  <span>{{scope.row.color}}</span></template>
+              </el-table-column>
+              <el-table-column
+                      label="季节"
+                      prop="seasons">
+                <template slot-scope="scope">
+                  <span>{{scope.row.seasons}}</span></template>
+              </el-table-column>
+              <el-table-column
+                align="right">
+                <template slot="header" slot-scope="scope"> 
+                  <el-tooltip content="添加服装信息" placement="bottom-start">
+                   <el-button type="text" style="margin-bottom: 10px;font-size: 15px;margin-right: 10px;" @click="addCloth()">添加</el-button>
+                 </el-tooltip>
+                 <!-- 添加服装信息弹窗 -->
+                 <el-dialog :visible.sync="addVisible" >
+                  <el-form :model="clothesDetail" :rules="rules" ref="clothesDetail" label-width="100px" class="edit-add-form">
+                    <h2 style="text-align: center;">服装信息</h2>
+                    <el-form-item label="服装名称" prop="name" >
+                      <el-input v-model="clothesDetail.name"></el-input>
+                    </el-form-item>
+                    <el-form-item label="服装价格" prop="price" >
+                      <el-input v-model="clothesDetail.price"></el-input>
+                    </el-form-item>
+                    <el-form-item label="服装租金/天" prop="rent" >
+                      <el-input v-model="clothesDetail.rent"></el-input>
+                    </el-form-item>
+                    <el-form-item label="服装尺码" prop="size">
+                      <el-select v-model="clothesDetail.size" placeholder="请选择尺码">
+                        <el-option label="S" value="S"></el-option>
+                        <el-option label="M " value="M"></el-option>
+                        <el-option label="L " value="L"></el-option>
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item label="服装季节" prop="seasons">
+                      <el-select v-model="clothesDetail.seasons" placeholder="请选择季节">
+                        <el-option label="春" value="春"></el-option>
+                        <el-option label="夏 " value="夏"></el-option>
+                        <el-option label="秋" value="秋"></el-option>
+                        <el-option label="冬 " value="冬"></el-option>
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item label="服装颜色" prop="color">
+                      <el-select v-model="clothesDetail.color" placeholder="请选择颜色">
+                        <el-option label="红" value="红"></el-option>
+                        <el-option label="白 " value="白"></el-option>
+                        <el-option label="蓝" value="蓝"></el-option>
+                        <el-option label="黄 " value="黄"></el-option>
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item label="图片链接" prop="image" >
+                      <el-input v-model="clothesDetail.image"></el-input>
+                    </el-form-item>
+                    <el-input
+                      type="description"
+                      :rows="2"
+                      placeholder="详细描述"
+                      v-model="clothesDetail.description">
+                    </el-input>
+                    <el-form-item>
+                      <el-button type="primary" @click="submitForm()" class="cloth-dia">立即创建</el-button>
+                      <el-button @click="resetForm('clothesDetail')">重置</el-button>
+                    </el-form-item>
+                  </el-form>
+                </el-dialog>
+                 
+                <el-input
+                    v-model="search"
+                    size="mini"
+                    placeholder="输入关键字搜索" style="width:50%;margin-right: 150px;"> <i slot="prefix" class="el-input__icon el-icon-search">
+                    </i></el-input>
+                </template>
+                <template slot-scope="scope">
+                  <el-button
+                    size="mini"
+                    @click="updateCloth(scope.row.id)" >编辑</el-button>
+                    <el-button
+                      size="mini"
+                      type="danger"
+                      slot="reference" plain @click="deleteconfirm(scope.row.id)">删除</el-button> 
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
+    </div>
+</body>
+<script>
+    new Vue({
+        el:'#app',
+        data() {
+            return {
+              list:' http://localhost:9999/Clothing/clothes-detail/delete/',
+              // 表格的尺码
+              options: [{
+                value: 'S',
+                label: 'S'
+              }, {
+                value: 'M',
+                label: 'M'
+              }, {
+                value: 'L',
+                label: 'L'
+              },],
+              value: '',
+              //表单数据
+                addVisible:false,
+                visible:false,
+                tableData: [], //衣服表
+                search: '',
+                //弹窗数据
+                clothesDetail: {
+                    name: '',
+                    price:'',
+                    color: '',
+                    size: '',
+                    description: '',
+                    seasons: '',
+                    rent: '',
+                    image: ''
+                  },
+                rules: {
+                  region: [
+                    { required: true, message: '请选择活动区域', trigger: 'change' }
+                  ],
+                  date1: [
+                    { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+                  ],
+                  date2: [
+                    { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
+                  ],
+
+                }
+              }
+            },
+            mounted(){
+              axios.post('http://localhost:9999/Clothing/admin/clothes/'
+              ).then(res=>{
+                let resp=res.data
+                if(resp.code!==0){
+                  this.tableData=resp.data
+                  console.log("---===",this.tableData)
+                }else {
+                  
+                }
+              })
+            },
+        methods: {
+
+              //删除键
+              deleteconfirm(id){
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消',
+                  type: 'warning'
+                }).then(() => {
+                  axios.get('http://localhost:9999/Clothing/clothes-detail/delete?id='+id
+                  ).then(res=>{
+                    let resp=res.data
+                    if(resp.code!==0){
+                      this.$message({
+                        type: 'success',
+                        message: resp.data
+                      });
+                    }else {
+                    }
+                  })
+                }).catch(() => {
+                  this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                  });          
+                });
+              },
+              //表单提交
+              submitForm() {
+                console.log("添加",this.clothesDetail)
+                axios.post('http://localhost:9999/Clothing/clothes-detail/addCloth/',this.clothesDetail
+                ).then(res=>{
+                  let resp=res.data
+                  if(resp.code!==0){
+                    this.addVisible = false
+                    this.$message({
+                      type: 'success',
+                      message: resp.data
+                    });
+                  }else {
+
+                  }
+                })
+              },
+              resetForm(formName) {
+                this.$refs[formName].resetFields();
+              },
+              //添加衣服
+              addCloth(){
+                this.addVisible = true
+                this.clothesDetail={}
+              },
+              //编辑衣服
+              updateCloth(id){
+                this.addVisible = true
+                axios.get('http://localhost:9999/Clothing/clothes-detail/'+id
+                ).then(res=>{
+                  let resp=res.data
+                  if(resp.code!==0){
+                    this.clothesDetail=resp.data
+                    console.log("编辑",resp.data)
+                  }else {
+
+                  }
+                })
+              }
+         },
+    })
+</script>
+</html>

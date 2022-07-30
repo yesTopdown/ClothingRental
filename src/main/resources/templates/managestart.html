@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员主页面</title>
+    <link rel="stylesheet" href="css/mainstart.css">
+     <!-- 引入样式 -->
+<!--     <link rel="stylesheet" href="../static/plugins/element-ui/index.css">-->
+     <!-- 引入组件库 -->
+     <script src="../static/plugins/vue/vue.js"></script>
+<!--     <script src="../static/plugins/element-ui/index.js"></script>-->
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+     <script src="../static/js/validate.js"></script>
+     <script src="../static/plugins/axios/axios.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div style="position: relative;">
+           <img class="bg-img" src="img/runing.jpg" alt="">
+           <div class="div-content">
+                <div>
+                    <!-- 大字 -->
+                    <div><span class="big-word">欢迎回来,管理员</span></div>
+                    <!-- 小字 -->
+                    <div style=" margin-top: 30px;"><span class="small-word">THE BEST EXPERIENCE</span></div>
+                     <!-- 按键 -->
+                        <div style=" margin-top: 30px;">
+                            <div>
+                            <el-button class="goto-btu" style="font-size: 25px;border: 1px solid #000;" @click="gotologin()">进入</el-button>
+                            </div>
+                        </div>
+                </div>
+           </div>
+        </div>
+    </div>
+</body>
+    <script>
+        new Vue({
+            el:'#app',
+            data(){
+                return{
+
+                }
+            },
+            methods:{
+                gotologin(){
+                    window.location.href='readminlogin.html'
+                }
+            }
+        })
+    </script>
+</html>

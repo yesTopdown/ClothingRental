@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员登录</title>
+    <link rel="stylesheet" href="css/readminlogin.css">
+     <!-- 引入样式 -->
+<!--     <link rel="stylesheet" href="../static/plugins/element-ui/index.css">-->
+     <!-- 引入组件库 -->
+     <script src="../static/plugins/vue/vue.js"></script>
+<!--     <script src="../static/plugins/element-ui/index.js"></script>-->
+     <script src="../static/js/validate.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<!--     <script src="../static/plugins/axios/axios.min.js"></script>-->
+    <script src="http://cdn.suoluomei.com/common/js2.0/axios/axios.min.js"></script>
+
+</head>
+<body>
+    <div id="app">
+        <div style="position: relative;">
+           <img class="bg-img" src="img/reservation-bg.jpg" alt="">
+           <div class="div-content">
+             <el-row :gutter="20">
+                <!-- 左边 -->
+                <el-col :span="12">
+                <div style="color:white;margin-top: 13%;" >
+                    <div >
+                        <el-divider></el-divider>
+                    </div>
+                    <div>
+                        <p>CLONTHING RENTAL</p>
+                        <h1>在这里，您可以预订或只是浏览我们的商品</h1>
+                        <p>Donec pretium est orci， non vulputate arcu hendrerit a.Fusce a eleifend riqsie， namei sollicitudin urna diam， sed commodo purus porta ut</p>
+                    </div>
+                    <div >
+                        <el-divider></el-divider>
+                    </div>
+                </div>
+                </el-col>
+                <el-col :span="12">
+                    <div>
+                        <!-- 管理员登录表单 -->
+                        <el-form :model="admin" status-icon :rules="rules" ref="#" label-width="auto" class="demo-admin adminlogin-form">
+                            <h1 style="font-weight: bold;">管理员登录</h1>
+                            <el-form-item prop="name" class="admin-input">
+                              <el-input  type="text" placeholder="输入账号" v-model="admin.name" autocomplete="off" aria-placeholder="账号"></el-input>
+                            </el-form-item>
+                            <el-form-item  prop="password" class="admin-input">
+                              <el-input type="password" placeholder="输入密码" v-model="admin.password" autocomplete="off"></el-input>
+                            </el-form-item>
+                                <li style="font-size: 1px;margin-bottom: 15px;" class="admin-input">
+                                    By registering, I accept the Terms of Service and Privacy Policy.</li>
+                            <el-form-item>
+                              <el-button :loading="loading" type="info" @click="submitForm" class="adminlogin-btu">
+                                <span v-if="!loading">登录</span>
+                                <span v-else>登录中...</span>
+                            </el-button>
+                            </el-form-item>
+                          </el-form>
+                    </div>
+                </el-col>
+              </el-row>
+           </div>
+        </div>
+    </div>
+</body>
+<script>
+    // import {axios} from "../static/plugins/axios/axios.min";
+    new Vue({
+        el:'#app',
+        data(){
+            // 数据校验
+            var validatePass = (rule, value, callback) => {
+                if (value === '') {
+                callback(new Error('请输入用户名'));
+                } else {
+                if (this.admin.password !== '') {
+                    this.$refs.admin.validateField('password');
+                }
+                callback();
+                }
+            };
+            var validatePass2 = (rule, value, callback) => {
+                if (value === '') {
+                callback(new Error('请输入密码'));
+                } else {
+                callback();
+                }
+            };
+            return{
+                loading:false,//登录
+                admin: {
+                        name: '张三',
+                        password: '123456',
+                    },
+                    rules: {
+                    name: [
+                        { validator: validatePass, trigger: 'blur' }
+                    ],
+                    password: [
+                        { validator: validatePass2, trigger: 'blur' }
+                    ],
+                    }
+             };
+        },
+        methods:{
+            submitForm() {
+                    if (this.admin.name!==''&&this.admin.password!=='') {
+                        this.loading=true
+                        axios.post('http://localhost:9999/Clothing/admin/login/',this.admin
+                        ).then(res=>{
+                            let resp=res.data
+                            if(resp.code!==0){
+                                this.$message.success(resp.data)
+                                this.loading=true,//登录
+                                window.location.href= 'remanger.html';
+                            }else {
+                                this.$message.error(resp.msg)
+                            }
+                        })
+                    } else {
+                        this.$message.error("输入错误")
+                        this.loading = false
+                    }
+                }
+             },
+        })
+</script>
+</html>
